@@ -341,7 +341,8 @@ public class KRand
 	[MethodImpl(FAST_INLINE)]
 	public float NextSingle()
 	{
-		return (NextUInt64() >> 40) * (1.0f / (1u << 24));
+		//return (NextUInt64() >> 40) * (1.0f / (1u << 24));
+		return (NextUInt32() >> 8) * (1.0f / (1u << 24));
 	}
 	/// <summary>Returns a value in the range [0, 1]</summary>
 	[MethodImpl(FAST_INLINE)]
