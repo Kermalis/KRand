@@ -87,6 +87,23 @@ public class KRand
 		}
 		return NextInt32(0, chanceDenominator - 1) < chanceNumerator;
 	}
+	[MethodImpl(FAST_INLINE)]
+	public bool NextBoolean(uint chanceNumerator, uint chanceDenominator)
+	{
+		if (chanceNumerator >= chanceDenominator)
+		{
+			return true;
+		}
+		if (chanceNumerator == 0)
+		{
+			return false;
+		}
+		if (chanceNumerator == chanceDenominator / 2)
+		{
+			return NextBoolean();
+		}
+		return NextUInt32(0, chanceDenominator - 1) < chanceNumerator;
+	}
 
 	/// <summary>Returns a value in the range [<see cref="sbyte.MinValue"/>, <see cref="sbyte.MaxValue"/>]</summary>
 	[MethodImpl(FAST_INLINE)]
