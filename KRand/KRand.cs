@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Kermalis.KRand;
 
@@ -48,6 +49,80 @@ public class KRand
 			throw new ArgumentOutOfRangeException(nameof(seed), $"Invalid seed supplied: {s}");
 		}
 	}
+
+	/// <summary>
+	/// Initializes a new <see cref="KRand"/> instance using a previously
+	/// captured state.
+	/// </summary>
+	/// <param name="state">Encoded state.</param>
+	/// <exception cref="ArgumentNullException">Thrown if <paramref name="state"/> is null.</exception>
+	/// <exception cref="ArgumentException">Thrown if <paramref name="state"/> is a whitespace-only string.</exception>
+	/// <exception cref="ArgumentException">Thrown if <paramref name="state"/> is invalid.</exception>
+	/// <exception cref="ArgumentException">Thrown if <paramref name="state"/> is corrupt.</exception>
+	public KRand(string state)
+	{
+		SetState(state);
+	}
+
+	/// <summary>
+	/// Gets the current state.
+	/// </summary>
+	/// <returns>Encoded state.</returns>
+	public string GetState()
+	{
+		var builder = new StringBuilder("v1:");
+		builder.Append($"{_s0}:");
+		builder.Append($"{_s1}:");
+		builder.Append($"{_s2}:");
+		builder.Append($"{_s3}:");
+		builder.Append($"{_boolStateCounter}:");
+		builder.Append($"{_boolState}:");
+		builder.Append($"{_8StateCounter}:");
+		builder.Append($"{_8State}:");
+		builder.Append($"{_16StateCounter}:");
+		builder.Append($"{_16State}:");
+		builder.Append($"{_next32State}:");
+		builder.Append(NextUInt64());
+
+		return builder.ToString();
+	}
+
+	private void SetState(string state)
+	{
+		ArgumentException.ThrowIfNullOrEmpty(state);
+
+		var parts = state.Split(':');
+		if (parts.Length != 13)
+			throw new ArgumentException($"{nameof(state)} is invalid.");
+
+		try
+		{
+			_s0 = ulong.Parse(parts[1]);
+			_s1 = ulong.Parse(parts[2]);
+			_s2 = ulong.Parse(parts[3]);
+			_s3 = ulong.Parse(parts[4]);
+			_boolStateCounter = byte.Parse(parts[5]);
+			_boolState = ulong.Parse(parts[6]);
+			_8StateCounter = byte.Parse(parts[7]);
+			_8State = ulong.Parse(parts[8]);
+			_16StateCounter = byte.Parse(parts[9]);
+			_16State = ulong.Parse(parts[10]);
+			_next32State = uint.TryParse(parts[11], out var next32State)
+				? next32State
+				: null;
+		}
+		catch(Exception ex)
+		{
+			throw new ArgumentException($"{nameof(state)} is invalid.", ex);
+		}
+
+		var expectedNext = ulong.Parse(parts[12]);
+		if (expectedNext != NextUInt64())
+		{
+			throw new ArgumentException("State is corrupt.");
+		}
+	}
+	
 	[MethodImpl(FAST_INLINE)]
 	private static ulong SplitMix64(ref ulong x)
 	{
