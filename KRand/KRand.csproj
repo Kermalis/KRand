@@ -13,6 +13,7 @@
 		<Title>KRand</Title>
 		<AssemblyName>KRand</AssemblyName>
 		<RepositoryUrl>https://github.com/Kermalis/KRand</RepositoryUrl>
+		<Version>1.1</Version>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

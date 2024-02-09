@@ -19,33 +19,23 @@ public class KRand
 {
 	protected const MethodImplOptions FAST_INLINE = MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization;
 
-	private ulong _s0;
-	private ulong _s1;
-	private ulong _s2;
-	private ulong _s3;
+	private KRandState _s;
 
-	private byte _boolStateCounter;
-	private ulong _boolState;
-
-	private byte _8StateCounter;
-	private ulong _8State;
-
-	private byte _16StateCounter;
-	private ulong _16State;
-
-	private uint? _next32State;
-
+	public KRand(in KRandState state)
+	{
+		SetState(state);
+	}
 	public KRand(ulong? seed = null)
 	{
 		ulong s = seed ?? (ulong)DateTime.UtcNow.Ticks;
-		_s0 = SplitMix64(ref s);
-		_s1 = SplitMix64(ref s);
-		_s2 = SplitMix64(ref s);
-		_s3 = SplitMix64(ref s);
+		_s.S0 = SplitMix64(ref s);
+		_s.S1 = SplitMix64(ref s);
+		_s.S2 = SplitMix64(ref s);
+		_s.S3 = SplitMix64(ref s);
 
-		if (_s0 == 0 && _s1 == 0 && _s2 == 0 && _s3 == 0)
+		if (_s.S0 == 0 && _s.S1 == 0 && _s.S2 == 0 && _s.S3 == 0)
 		{
-			throw new ArgumentOutOfRangeException(nameof(seed), $"Invalid seed supplied: {s}");
+			throw new ArgumentOutOfRangeException(nameof(seed), s, "Invalid seed supplied");
 		}
 	}
 	[MethodImpl(FAST_INLINE)]
@@ -57,17 +47,31 @@ public class KRand
 		return z ^ (z >> 31);
 	}
 
-	public bool NextBoolean()
+	public KRandState GetState()
 	{
-		if (_boolStateCounter == 0)
+		return _s;
+	}
+	public void SetState(in KRandState state)
+	{
+		if (state.S0 == 0 && state.S1 == 0 && state.S2 == 0 && state.S3 == 0)
 		{
-			_boolState = NextUInt64();
-			_boolStateCounter = 64;
+			throw new ArgumentOutOfRangeException(nameof(state), state, "Invalid state supplied");
 		}
 
-		bool result = (_boolState & 1) == 0;
-		_boolStateCounter--;
-		_boolState >>= 1;
+		_s = state;
+	}
+
+	public bool NextBoolean()
+	{
+		if (_s.Counter_Bool == 0)
+		{
+			_s.State_Bool = NextUInt64();
+			_s.Counter_Bool = 64;
+		}
+
+		bool result = (_s.State_Bool & 1) == 0;
+		_s.Counter_Bool--;
+		_s.State_Bool >>= 1;
 		return result;
 	}
 	[MethodImpl(FAST_INLINE)]
@@ -135,15 +139,15 @@ public class KRand
 	[MethodImpl(FAST_INLINE)]
 	public byte NextByte()
 	{
-		if (_8StateCounter == 0)
+		if (_s.Counter_8 == 0)
 		{
-			_8State = NextUInt64();
-			_8StateCounter = 8;
+			_s.State_8 = NextUInt64();
+			_s.Counter_8 = 8;
 		}
 
-		byte result = (byte)_8State;
-		_8StateCounter--;
-		_8State >>= 8;
+		byte result = (byte)_s.State_8;
+		_s.Counter_8--;
+		_s.State_8 >>= 8;
 		return result;
 	}
 	/// <summary>Returns a value in the range [<paramref name="min"/>, <paramref name="max"/>]</summary>
@@ -197,15 +201,15 @@ public class KRand
 	[MethodImpl(FAST_INLINE)]
 	public ushort NextUInt16()
 	{
-		if (_16StateCounter == 0)
+		if (_s.Counter_16 == 0)
 		{
-			_16State = NextUInt64();
-			_16StateCounter = 4;
+			_s.State_16 = NextUInt64();
+			_s.Counter_16 = 4;
 		}
 
-		ushort result = (ushort)_16State;
-		_16StateCounter--;
-		_16State >>= 16;
+		ushort result = (ushort)_s.State_16;
+		_s.Counter_16--;
+		_s.State_16 >>= 16;
 		return result;
 	}
 	/// <summary>Returns a value in the range [<paramref name="min"/>, <paramref name="max"/>]</summary>
@@ -256,15 +260,15 @@ public class KRand
 	[MethodImpl(FAST_INLINE)]
 	public uint NextUInt32()
 	{
-		if (_next32State is null)
+		if (_s.Next32State is null)
 		{
 			ulong n = NextUInt64();
-			_next32State = (uint)(n & 0xFFFFFFFF);
-			return (uint)(n >> 32);
+			_s.Next32State = (uint)(n >> 32);
+			return (uint)n;
 		}
 
-		uint result = _next32State.Value;
-		_next32State = null;
+		uint result = _s.Next32State.Value;
+		_s.Next32State = null;
 		return result;
 	}
 	/// <summary>Returns a value in the range [<paramref name="min"/>, <paramref name="max"/>]</summary>
@@ -311,17 +315,17 @@ public class KRand
 	/// <summary>Returns a value in the range [0, <see cref="ulong.MaxValue"/>]</summary>
 	public ulong NextUInt64()
 	{
-		ulong result = BitOperations.RotateLeft(_s1 * 5, 7) * 9;
-		ulong t = _s1 << 17;
+		ulong result = BitOperations.RotateLeft(_s.S1 * 5, 7) * 9;
+		ulong t = _s.S1 << 17;
 
-		_s2 ^= _s0;
-		_s3 ^= _s1;
-		_s1 ^= _s2;
-		_s0 ^= _s3;
+		_s.S2 ^= _s.S0;
+		_s.S3 ^= _s.S1;
+		_s.S1 ^= _s.S2;
+		_s.S0 ^= _s.S3;
 
-		_s2 ^= t;
+		_s.S2 ^= t;
 
-		_s3 = BitOperations.RotateLeft(_s3, 45);
+		_s.S3 = BitOperations.RotateLeft(_s.S3, 45);
 
 		return result;
 	}

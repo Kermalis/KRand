@@ -3,7 +3,7 @@ using Xunit.Abstractions;
 
 namespace Kermalis.KRand.Tests;
 
-public sealed partial class RandomTests
+partial class RandomTests
 {
 	public sealed class TestDistribution_Int64
 	{

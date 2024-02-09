@@ -10,7 +10,7 @@ public sealed partial class RandomTests
 
 	/// <summary>Maps a value in the range [a1, a2] to [b1, b2]. Divide by zero occurs if a1 and a2 are equal</summary>
 	[MethodImpl(FAST_INLINE)]
-	public static decimal Lerp(in decimal value, in decimal a1, in decimal a2, in decimal b1, in decimal b2)
+	private static decimal Lerp(in decimal value, in decimal a1, in decimal a2, in decimal b1, in decimal b2)
 	{
 		return b1 + ((value - a1) / (a2 - a1) * (b2 - b1));
 	}
