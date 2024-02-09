@@ -6,6 +6,7 @@
 		<RootNamespace>Kermalis.KRand.Tests</RootNamespace>
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
+		<NoWarn>IDE0290</NoWarn>
 
 		<Authors>Kermalis</Authors>
 		<Copyright>Kermalis</Copyright>

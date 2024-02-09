@@ -247,10 +247,7 @@ public class KRand
 		{
 			return NextInt32();
 		}
-		if (max < min)
-		{
-			throw new ArgumentOutOfRangeException(nameof(max));
-		}
+		ArgumentOutOfRangeException.ThrowIfLessThan(max, min, nameof(max));
 
 		uint range = (uint)((long)max - min + 1);
 		return (int)(LemireBoundsUInt32(range) + min);
@@ -282,10 +279,7 @@ public class KRand
 		{
 			return NextUInt32();
 		}
-		if (max < min)
-		{
-			throw new ArgumentOutOfRangeException(nameof(max));
-		}
+		ArgumentOutOfRangeException.ThrowIfLessThan(max, min, nameof(max));
 
 		uint range = max - min + 1;
 		return LemireBoundsUInt32(range) + min;
@@ -309,10 +303,8 @@ public class KRand
 		{
 			return NextInt64();
 		}
-		if (max < min)
-		{
-			throw new ArgumentOutOfRangeException(nameof(max));
-		}
+		ArgumentOutOfRangeException.ThrowIfLessThan(max, min, nameof(max));
+
 		ulong range = (ulong)((Int128)max - min + 1);
 		return (long)((Int128)LemireBoundsUInt64(range) + min);
 	}
@@ -345,10 +337,7 @@ public class KRand
 		{
 			return NextUInt64();
 		}
-		if (max < min)
-		{
-			throw new ArgumentOutOfRangeException(nameof(max));
-		}
+		ArgumentOutOfRangeException.ThrowIfLessThan(max, min, nameof(max));
 
 		ulong range = max - min + 1;
 		return LemireBoundsUInt64(range) + min;
