@@ -27,7 +27,8 @@ public class KRand
 	}
 	public KRand(ulong? seed = null)
 	{
-		ulong s = seed ?? (ulong)DateTime.UtcNow.Ticks;
+		ulong pickedSeed = seed ?? (ulong)DateTime.UtcNow.Ticks;
+		ulong s = pickedSeed;
 		_s.S0 = SplitMix64(ref s);
 		_s.S1 = SplitMix64(ref s);
 		_s.S2 = SplitMix64(ref s);
@@ -35,7 +36,7 @@ public class KRand
 
 		if (_s.S0 == 0 && _s.S1 == 0 && _s.S2 == 0 && _s.S3 == 0)
 		{
-			throw new ArgumentOutOfRangeException(nameof(seed), s, "Invalid seed supplied");
+			throw new ArgumentOutOfRangeException(nameof(seed), pickedSeed, "Invalid seed supplied");
 		}
 	}
 	[MethodImpl(FAST_INLINE)]
