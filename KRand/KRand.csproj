@@ -23,8 +23,7 @@ You can inherit from the `KRand` class too and add other stuff.
 You can also shuffle `IList`s and `Span`s.
 Performance is the focus; no allocations unless absolutely necessary!
 
-Project URL and Samples ― https://github.com/Kermalis/KRand
-		</Description>
+Project URL and Samples ― https://github.com/Kermalis/KRand</Description>
 		<PackageProjectUrl>https://github.com/Kermalis/KRand</PackageProjectUrl>
 		<NeutralLanguage>en-001</NeutralLanguage>
 		<PackageTags>KRand;Rand;Random;Xoroshiro;Shuffle;Inclusive;Distribution</PackageTags>
@@ -35,8 +34,7 @@ Project URL and Samples ― https://github.com/Kermalis/KRand
 * `NextSingle()` was taking 32 extra bits. This is no longer the case
 * New `NextBoolean()` overload for higher value odds (up to `ulong.MaxValue`)
 * Extracted the state to its own struct. This lets you compare or save states, and allows you to reuse `KRand` objects
-* The exception that's thrown when an invalid seed is picked will now properly show the invalid seed
-		</PackageReleaseNotes>
+* The exception that's thrown when an invalid seed is picked will now properly show the invalid seed</PackageReleaseNotes>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
