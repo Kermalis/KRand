@@ -26,7 +26,7 @@ Performance is the focus; no allocations unless absolutely necessary!
 Project URL and Samples ― https://github.com/Kermalis/KRand</Description>
 		<PackageProjectUrl>https://github.com/Kermalis/KRand</PackageProjectUrl>
 		<NeutralLanguage>en-001</NeutralLanguage>
-		<PackageTags>KRand;Rand;Random;Xoroshiro;Shuffle;Inclusive;Distribution</PackageTags>
+		<PackageTags>KRand;Rand;Random;Xoshiro;Shuffle;Inclusive;Distribution</PackageTags>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 		<PackageReleaseNotes># Version 1.1.1 Changelog:
