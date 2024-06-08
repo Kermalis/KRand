@@ -14,7 +14,7 @@
 		<Title>KRand</Title>
 		<PackageId>KRand</PackageId>
 		<AssemblyName>KRand</AssemblyName>
-		<Version>1.1.0</Version>
+		<Version>1.1.1</Version>
 		<RepositoryUrl>https://github.com/Kermalis/KRand</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<Description>This .NET library is a super light implementation of the `Xoshiro256**` algorithm with inclusive min and max values, and it's only 1 file large.
@@ -29,12 +29,10 @@ Project URL and Samples ― https://github.com/Kermalis/KRand</Description>
 		<PackageTags>KRand;Rand;Random;Xoroshiro;Shuffle;Inclusive;Distribution</PackageTags>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-		<PackageReleaseNotes># Version 1.1.0 Changelog:
-* Upgraded to .net 8.0. The library is slightly faster simply because of that
-* `NextSingle()` was taking 32 extra bits. This is no longer the case
-* New `NextBoolean()` overload for higher value odds (up to `ulong.MaxValue`)
-* Extracted the state to its own struct. This lets you compare or save states, and allows you to reuse `KRand` objects
-* The exception that's thrown when an invalid seed is picked will now properly show the invalid seed</PackageReleaseNotes>
+		<PackageReleaseNotes># Version 1.1.1 Changelog:
+* Overloads for arrays with `KRand.RandomElement()` and `KRand.Shuffle()`
+* `RandomElement()` and `Shuffle()` now use less random bytes when possible (most of the time)
+* These methods also now return a `ref` or `ref readonly` if possible</PackageReleaseNotes>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

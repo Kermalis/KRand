@@ -387,17 +387,29 @@ public class KRand
 	}
 
 	[MethodImpl(FAST_INLINE)]
-	public T RandomElement<T>(ReadOnlySpan<T> source)
+	public ref readonly T RandomElement<T>(ReadOnlySpan<T> source)
 	{
 		if (source.Length == 1)
 		{
-			return source[0];
+			return ref source[0];
 		}
-		if (source.Length == 0)
+		ArgumentOutOfRangeException.ThrowIfLessThan(source.Length, 1, nameof(source));
+		return ref source[GetRandomIndex(0, source.Length - 1)];
+	}
+	[MethodImpl(FAST_INLINE)]
+	public ref T RandomElement<T>(Span<T> source)
+	{
+		if (source.Length == 1)
 		{
-			throw new ArgumentOutOfRangeException(nameof(source), $"\"{nameof(source)}\" must have at least one element.");
+			return ref source[0];
 		}
-		return source[NextInt32(0, source.Length - 1)];
+		ArgumentOutOfRangeException.ThrowIfLessThan(source.Length, 1, nameof(source));
+		return ref source[GetRandomIndex(0, source.Length - 1)];
+	}
+	[MethodImpl(FAST_INLINE)]
+	public ref T RandomElement<T>(T[] source)
+	{
+		return ref RandomElement(source.AsSpan());
 	}
 	[MethodImpl(FAST_INLINE)]
 	public T RandomElement<T>(IReadOnlyList<T> source)
@@ -407,11 +419,8 @@ public class KRand
 		{
 			return source[0];
 		}
-		if (count < 0)
-		{
-			throw new ArgumentOutOfRangeException(nameof(source), $"\"{nameof(source)}\" must have at least one element.");
-		}
-		return source[NextInt32(0, count)];
+		ArgumentOutOfRangeException.ThrowIfLessThan(count, 0, nameof(source));
+		return source[GetRandomIndex(0, count)];
 	}
 	/// <summary>Fisher-Yates Shuffle</summary>
 	public void Shuffle<T>(Span<T> source)
@@ -419,17 +428,23 @@ public class KRand
 		int count = source.Length - 1;
 		for (int a = count - 1; a >= 0; --a)
 		{
-			int b = NextInt32(a, count);
+			int b = GetRandomIndex(a, count);
 			(source[b], source[a]) = (source[a], source[b]);
 		}
 	}
-	/// <summary>Fisher-Yates Shuffle</summary>
+	/// <inheritdoc cref="Shuffle{T}(Span{T})"/>
+	[MethodImpl(FAST_INLINE)]
+	public void Shuffle<T>(T[] source)
+	{
+		Shuffle(source.AsSpan());
+	}
+	/// <inheritdoc cref="Shuffle{T}(Span{T})"/>
 	public void Shuffle<T>(IList<T> source)
 	{
 		int count = source.Count - 1;
 		for (int a = count - 1; a >= 0; --a)
 		{
-			int b = NextInt32(a, count);
+			int b = GetRandomIndex(a, count);
 			(source[b], source[a]) = (source[a], source[b]);
 		}
 	}
@@ -537,5 +552,34 @@ public class KRand
 			}
 		}
 		return (ulong)(m >> 64);
+	}
+
+	/// <summary>Gets an index for an array or list while consuming the least amount of bytes necessary</summary>
+	private int GetRandomIndex(int min, int max)
+	{
+		int delta = max - min;
+		if (delta <= byte.MaxValue)
+		{
+			// For example: [2, 257]
+			// delta = 255
+			// rand(0, 255) = 5 => 7
+
+			// For example: [1000, 1025]
+			// delta = 25
+			// rand(0, 25) = 22 => 1022
+			return NextByte(0, (byte)delta) + min;
+		}
+		if (delta <= ushort.MaxValue)
+		{
+			// For example: [2, 65537]
+			// delta = 65535
+			// rand(0, 65535) = 5 => 7
+
+			// For example: [1000, 10025]
+			// delta = 9025
+			// rand(0, 9025) = 200 => 1200
+			return NextUInt16(0, (ushort)delta) + min;
+		}
+		return NextInt32(min, max);
 	}
 }
