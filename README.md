@@ -1,11 +1,13 @@
-﻿# KRand
+﻿# 💻 KRand
+
+[![NuGet](https://img.shields.io/nuget/v/KRand.svg)](https://www.nuget.org/packages/KRand)
+[![NuGet downloads](https://img.shields.io/nuget/dt/KRand)](https://www.nuget.org/packages/KRand)
 
 I wrote this .NET 8.0 library since nobody else seems to want inclusive max values in their randomizers for some reason.
-Why do you guys have to be so weird?
 
 Anyway I'm only making it a library since I've been using a version of this in pretty much everything I do, it has no dependencies, and it's lightning fast, so I might as well make it public.
 
-It's like, really good.
+It's also only 1 file large.
 It's based on the `Xoshiro256**` algorithm, which is the go-to in this time period I think.
 You can supply your own seeds/states or not, the outputted values are evenly distributed, and it returns Boolean/8bit/16bit/32bit/64bit/Single/Double.
 (Half is not supported because the resolution is too low for even distribution - I tried it and it skewed towards one side.
@@ -30,9 +32,9 @@ It has `Vector3` which just grabs 3 random floats, since it's very common to nee
 If you want to really see how evenly distributed it is, run the included tests.
 I spent a lot of time and research to make the tests actually accurate with their reporting.
 
-...Okay fine, of course I'll show you:
-
 ----
+## 🚀 Example Tests:
+
 ### Boolean: 50/50 chance | 1,000,000,000 iterations
 ```
 False | 499,988,064 (50%)
