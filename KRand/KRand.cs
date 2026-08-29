@@ -17,7 +17,7 @@ namespace Kermalis.KRand;
 /// <summary>An inclusive-ranged Xoshiro256** randomizer with Lemire's bounds method</summary>
 public class KRand
 {
-	protected const MethodImplOptions FAST_INLINE = MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization;
+	protected const MethodImplOptions FAST_INLINE = MethodImplOptions.AggressiveInlining;
 
 	private KRandState _s;
 
@@ -36,7 +36,7 @@ public class KRand
 
 		if (_s.S0 == 0 && _s.S1 == 0 && _s.S2 == 0 && _s.S3 == 0)
 		{
-			throw new ArgumentOutOfRangeException(nameof(seed), pickedSeed, "Invalid seed supplied");
+			throw new ArgumentException($"Invalid seed supplied: 0x{pickedSeed:X}", nameof(seed));
 		}
 	}
 	[MethodImpl(FAST_INLINE)]
@@ -56,7 +56,7 @@ public class KRand
 	{
 		if (state.S0 == 0 && state.S1 == 0 && state.S2 == 0 && state.S3 == 0)
 		{
-			throw new ArgumentOutOfRangeException(nameof(state), state, "Invalid state supplied");
+			throw new ArgumentException("Invalid state supplied", nameof(state));
 		}
 
 		_s = state;
@@ -75,7 +75,6 @@ public class KRand
 		_s.State_Bool >>= 1;
 		return result;
 	}
-	[MethodImpl(FAST_INLINE)]
 	public bool NextBoolean(int chanceNumerator, int chanceDenominator)
 	{
 		if (chanceNumerator >= chanceDenominator)
@@ -92,7 +91,6 @@ public class KRand
 		}
 		return NextInt32(0, chanceDenominator - 1) < chanceNumerator;
 	}
-	[MethodImpl(FAST_INLINE)]
 	public bool NextBoolean(uint chanceNumerator, uint chanceDenominator)
 	{
 		if (chanceNumerator >= chanceDenominator)
@@ -109,7 +107,6 @@ public class KRand
 		}
 		return NextUInt32(0, chanceDenominator - 1) < chanceNumerator;
 	}
-	[MethodImpl(FAST_INLINE)]
 	public bool NextBoolean(ulong chanceNumerator, ulong chanceDenominator)
 	{
 		if (chanceNumerator >= chanceDenominator)
@@ -134,7 +131,6 @@ public class KRand
 		return (sbyte)NextByte();
 	}
 	/// <summary>Returns a value in the range [<paramref name="min"/>, <paramref name="max"/>]</summary>
-	[MethodImpl(FAST_INLINE)]
 	public sbyte NextSByte(sbyte min, sbyte max)
 	{
 		if (min == max)
@@ -145,16 +141,12 @@ public class KRand
 		{
 			return NextSByte();
 		}
-		if (max < min)
-		{
-			throw new ArgumentOutOfRangeException(nameof(max));
-		}
+		ArgumentOutOfRangeException.ThrowIfLessThan(max, min);
 
-		byte range = (byte)(max - min + 1);
-		return (sbyte)(LemireBoundsByte(range) + min);
+		byte range = (byte)((byte)(max - min) + 1);
+		return (sbyte)((sbyte)LemireBoundsByte(range) + min);
 	}
 	/// <summary>Returns a value in the range [0, <see cref="byte.MaxValue"/>]</summary>
-	[MethodImpl(FAST_INLINE)]
 	public byte NextByte()
 	{
 		if (_s.Counter_8 == 0)
@@ -169,7 +161,6 @@ public class KRand
 		return result;
 	}
 	/// <summary>Returns a value in the range [<paramref name="min"/>, <paramref name="max"/>]</summary>
-	[MethodImpl(FAST_INLINE)]
 	public byte NextByte(byte min, byte max)
 	{
 		if (min == max)
@@ -180,10 +171,7 @@ public class KRand
 		{
 			return NextByte();
 		}
-		if (max < min)
-		{
-			throw new ArgumentOutOfRangeException(nameof(max));
-		}
+		ArgumentOutOfRangeException.ThrowIfLessThan(max, min);
 
 		byte range = (byte)(max - min + 1);
 		return (byte)(LemireBoundsByte(range) + min);
@@ -196,7 +184,6 @@ public class KRand
 		return (short)NextUInt16();
 	}
 	/// <summary>Returns a value in the range [<paramref name="min"/>, <paramref name="max"/>]</summary>
-	[MethodImpl(FAST_INLINE)]
 	public short NextInt16(short min, short max)
 	{
 		if (min == max)
@@ -207,16 +194,12 @@ public class KRand
 		{
 			return NextInt16();
 		}
-		if (max < min)
-		{
-			throw new ArgumentOutOfRangeException(nameof(max));
-		}
+		ArgumentOutOfRangeException.ThrowIfLessThan(max, min);
 
-		ushort range = (ushort)(max - min + 1);
-		return (short)(LemireBoundsUInt16(range) + min);
+		ushort range = (ushort)((ushort)(max - min) + 1);
+		return (short)((short)LemireBoundsUInt16(range) + min);
 	}
 	/// <summary>Returns a value in the range [0, <see cref="ushort.MaxValue"/>]</summary>
-	[MethodImpl(FAST_INLINE)]
 	public ushort NextUInt16()
 	{
 		if (_s.Counter_16 == 0)
@@ -231,7 +214,6 @@ public class KRand
 		return result;
 	}
 	/// <summary>Returns a value in the range [<paramref name="min"/>, <paramref name="max"/>]</summary>
-	[MethodImpl(FAST_INLINE)]
 	public ushort NextUInt16(ushort min, ushort max)
 	{
 		if (min == max)
@@ -242,10 +224,7 @@ public class KRand
 		{
 			return NextUInt16();
 		}
-		if (max < min)
-		{
-			throw new ArgumentOutOfRangeException(nameof(max));
-		}
+		ArgumentOutOfRangeException.ThrowIfLessThan(max, min);
 
 		ushort range = (ushort)(max - min + 1);
 		return (ushort)(LemireBoundsUInt16(range) + min);
@@ -258,7 +237,6 @@ public class KRand
 		return (int)NextUInt32();
 	}
 	/// <summary>Returns a value in the range [<paramref name="min"/>, <paramref name="max"/>]</summary>
-	[MethodImpl(FAST_INLINE)]
 	public int NextInt32(int min, int max)
 	{
 		if (min == max)
@@ -269,13 +247,12 @@ public class KRand
 		{
 			return NextInt32();
 		}
-		ArgumentOutOfRangeException.ThrowIfLessThan(max, min, nameof(max));
+		ArgumentOutOfRangeException.ThrowIfLessThan(max, min);
 
-		uint range = (uint)((long)max - min + 1);
-		return (int)(LemireBoundsUInt32(range) + min);
+		uint range = (uint)(max - min) + 1;
+		return (int)LemireBoundsUInt32(range) + min;
 	}
 	/// <summary>Returns a value in the range [0, <see cref="uint.MaxValue"/>]</summary>
-	[MethodImpl(FAST_INLINE)]
 	public uint NextUInt32()
 	{
 		if (_s.Next32State is null)
@@ -290,7 +267,6 @@ public class KRand
 		return result;
 	}
 	/// <summary>Returns a value in the range [<paramref name="min"/>, <paramref name="max"/>]</summary>
-	[MethodImpl(FAST_INLINE)]
 	public uint NextUInt32(uint min, uint max)
 	{
 		if (min == max)
@@ -301,7 +277,7 @@ public class KRand
 		{
 			return NextUInt32();
 		}
-		ArgumentOutOfRangeException.ThrowIfLessThan(max, min, nameof(max));
+		ArgumentOutOfRangeException.ThrowIfLessThan(max, min);
 
 		uint range = max - min + 1;
 		return LemireBoundsUInt32(range) + min;
@@ -314,7 +290,6 @@ public class KRand
 		return (long)NextUInt64();
 	}
 	/// <summary>Returns a value in the range [<paramref name="min"/>, <paramref name="max"/>]</summary>
-	[MethodImpl(FAST_INLINE)]
 	public long NextInt64(long min, long max)
 	{
 		if (min == max)
@@ -325,10 +300,10 @@ public class KRand
 		{
 			return NextInt64();
 		}
-		ArgumentOutOfRangeException.ThrowIfLessThan(max, min, nameof(max));
+		ArgumentOutOfRangeException.ThrowIfLessThan(max, min);
 
-		ulong range = (ulong)((Int128)max - min + 1);
-		return (long)((Int128)LemireBoundsUInt64(range) + min);
+		ulong range = (ulong)(max - min) + 1;
+		return (long)LemireBoundsUInt64(range) + min;
 	}
 	/// <summary>Returns a value in the range [0, <see cref="ulong.MaxValue"/>]</summary>
 	public ulong NextUInt64()
@@ -348,7 +323,6 @@ public class KRand
 		return result;
 	}
 	/// <summary>Returns a value in the range [<paramref name="min"/>, <paramref name="max"/>]</summary>
-	[MethodImpl(FAST_INLINE)]
 	public ulong NextUInt64(ulong min, ulong max)
 	{
 		if (min == max)
@@ -359,7 +333,7 @@ public class KRand
 		{
 			return NextUInt64();
 		}
-		ArgumentOutOfRangeException.ThrowIfLessThan(max, min, nameof(max));
+		ArgumentOutOfRangeException.ThrowIfLessThan(max, min);
 
 		ulong range = max - min + 1;
 		return LemireBoundsUInt64(range) + min;
@@ -411,7 +385,6 @@ public class KRand
 	{
 		return ref RandomElement(source.AsSpan());
 	}
-	[MethodImpl(FAST_INLINE)]
 	public T RandomElement<T>(IReadOnlyList<T> source)
 	{
 		int count = source.Count - 1;
@@ -506,6 +479,7 @@ public class KRand
 	{
 		uint x = NextUInt32();
 		ulong m = (ulong)x * range;
+		//ulong m = Math.BigMul(x, range);
 		uint l = (uint)m;
 		if (l < range)
 		{
@@ -522,6 +496,7 @@ public class KRand
 			{
 				x = NextUInt32();
 				m = (ulong)x * range;
+				//m = Math.BigMul(x, range);
 				l = (uint)m;
 			}
 		}
@@ -531,9 +506,8 @@ public class KRand
 	private ulong LemireBoundsUInt64(ulong range)
 	{
 		ulong x = NextUInt64();
-		UInt128 m = (UInt128)x * range;
-		ulong l = (ulong)m;
-		if (l < range)
+		ulong hi = Math.BigMul(x, range, out ulong lo);
+		if (lo < range)
 		{
 			ulong t = 0uL - range;
 			if (t >= range)
@@ -544,14 +518,12 @@ public class KRand
 					t %= range;
 				}
 			}
-			while (l < t)
+			while (lo < t)
 			{
-				x = NextUInt64();
-				m = (UInt128)x * range;
-				l = (ulong)m;
+				hi = Math.BigMul(NextUInt64(), range, out lo);
 			}
 		}
-		return (ulong)(m >> 64);
+		return hi;
 	}
 
 	/// <summary>Gets an index for an array or list while consuming the least amount of bytes necessary</summary>

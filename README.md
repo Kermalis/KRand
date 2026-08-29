@@ -3,7 +3,7 @@
 [![NuGet](https://img.shields.io/nuget/v/KRand.svg)](https://www.nuget.org/packages/KRand)
 [![NuGet downloads](https://img.shields.io/nuget/dt/KRand)](https://www.nuget.org/packages/KRand)
 
-I wrote this .NET 8.0 library since nobody else seems to want inclusive max values in their randomizers for some reason.
+I wrote this .NET library since nobody else seems to want inclusive max values in their randomizers for some reason.
 
 Anyway I'm only making it a library since I've been using a version of this in pretty much everything I do, it has no dependencies, and it's lightning fast, so I might as well make it public.
 

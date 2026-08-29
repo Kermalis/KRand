@@ -27,8 +27,8 @@ public sealed partial class RandomTests
 	private static void ToName(ref decimal rangeBegin, in decimal increment, int i, int numBuckets, out string range, out decimal expectedAvg)
 	{
 		decimal rangeEnd = rangeBegin + increment;
-		range = string.Format("[{0:F5}, {1:F5}{2}", rangeBegin, rangeEnd, i == numBuckets - 1 ? ']' : ')');
-		expectedAvg = Lerp(0.5m, 0, 1, rangeBegin, rangeEnd);
+		range = string.Format("[{0:N5}, {1:N5}{2}", rangeBegin, rangeEnd, i == numBuckets - 1 ? ']' : ')');
+		expectedAvg = Lerp(0.5m, 0m, 1m, rangeBegin, rangeEnd);
 		rangeBegin = rangeEnd;
 	}
 
@@ -39,7 +39,7 @@ public sealed partial class RandomTests
 	{
 		ToName(ref rangeBegin, increment, i, numBuckets, out string range, out decimal expectedAvg);
 
-		o.WriteLine(string.Format("Bucket {0} | {1} | R AVG = {2:F5} ||| {3:N0} ({4:P2}) | SUM = {5:N0} | AVG = {6:F5}",
+		o.WriteLine(string.Format("Bucket {0} | {1} | R AVG = {2:N5} ||| {3:N0} ({4:P3}) | SUM = {5:N0} | AVG = {6:N5}",
 			i, range, expectedAvg, num, num / numRuns, sum, sum / num));
 	}
 
@@ -60,7 +60,7 @@ public sealed partial class RandomTests
 	{
 		ToName(ref rangeBegin, increment, i, numBuckets, out string range, out decimal expectedAvg);
 
-		o.WriteLine(string.Format("Bucket {0} | {1} | R AVG = {2:F5} ||| {3:N0} ({4:P2}) | AVG = {5:F5}",
+		o.WriteLine(string.Format("Bucket {0} | {1} | R AVG = {2:N5} ||| {3:N0} ({4:P3}) | AVG = {5:N5}",
 			i, range, expectedAvg, num, num / numRuns, avg));
 	}
 

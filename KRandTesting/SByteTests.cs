@@ -44,7 +44,7 @@ partial class RandomTests
 		}
 
 		[Theory]
-		[InlineData(0_100_000_000, 10, -115, 115)]
+		[InlineData(0_100_000_000, 10, -124, 124)]
 		public void Test(uint numRuns, int numBuckets, sbyte min, sbyte max)
 		{
 			var rand = new KRand();
